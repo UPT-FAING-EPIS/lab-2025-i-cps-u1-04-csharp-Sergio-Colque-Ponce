@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfico de Métricas - Sergio Colque Ponce</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        
+        .metrics-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        .metrics-title {
+            font-size: 14px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .metrics-title .edit-icon {
+            color: #0078d4;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        
+        .metrics-tags {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        
+        .metric-tag {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            padding: 5px 15px;
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .metric-tag-icon {
+            margin-right: 5px;
+            color: #666;
+        }
+        
+        .metric-name {
+            font-weight: bold;
+        }
+        
+        .metric-type {
+            color: #666;
+            margin-left: 5px;
+        }
+        
+        .metric-close {
+            margin-left: 8px;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        .chart-container {
+            height: 400px;
+            position: relative;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #fff;
+        }
+        
+        .y-axis {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            bottom: 40px;
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .x-axis {
+            position: absolute;
+            left: 90px;
+            right: 10px;
+            bottom: 10px;
+            height: 30px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .graph-area {
+            position: absolute;
+            left: 90px;
+            right: 10px;
+            top: 10px;
+            bottom: 40px;
+            background-color: #fff;
+            border-left: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .purple-spike {
+            position: absolute;
+            bottom: 0;
+            left: 75%;
+            width: 40px;
+            height: 70%;
+            background-color: rgba(153, 51, 204, 0.7);
+            clip-path: polygon(0 100%, 50% 0, 100% 100%);
+        }
+        
+        .green-area {
+            position: absolute;
+            bottom: 0;
+            left: 72%;
+            width: 60px;
+            height: 30%;
+            background-color: rgba(51, 102, 0, 0.4);
+            clip-path: polygon(0 100%, 25% 20%, 50% 40%, 75% 30%, 100% 100%);
+        }
+        
+        .horizontal-lines {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .h-line {
+            width: 100%;
+            height: 1px;
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            margin-right: 5px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="metrics-container">
+        <div class="metrics-title">
+            Promedio Average Response Time (deprecated), Promedio Average Response Time (deprecated) y 7 métricas más durante upt-awa-799
+            <span class="edit-icon">✏️</span>
+        </div>
+        
+        <div class="metrics-tags">
+            <div class="metric-tag">
+                <span class="metric-tag-icon">📈</span>
+                <span class="metric-name">upt-awa-799, Average Response Time</span>
+                <span class="metric-type">Promedio</span>
+                <span class="metric-close">✖</span>
+            </div>
+            <div class="metric-tag">
+                <span class="metric-tag-icon">📈</span>
+                <span class="metric-name">upt-awa-799, Data In</span>
+                <span class="metric-type">Suma</span>
+                <span class="metric-close">✖</span>
+            </div>
+            <div class="metric-tag">
+                <span class="metric-tag-icon">📈</span>
+                <span class="metric-name">upt-awa-799, CPU Time</span>
+                <span class="metric-type">Suma</span>
+                <span class="metric-close">✖</span>
+            </div>
+            <div class="metric-tag">
+                <span class="metric-tag-icon">📈</span>
+                <span class="metric-name">upt-awa-799, CPU Time</span>
+                <span class="metric-type">Suma</span>
+                <span class="metric-close">✖</span>
+            </div>
+            <div class="metric-tag">
+                <span class="metric-tag-icon">📈</span>
+                <span class="metric-name">upt-awa-799, Data Out</span>
+                <span class="metric-type">Suma</span>
+                <span class="metric-close">✖</span>
+            </div>
+            <div class="metric-tag">
+                <span class="metric-tag-icon">📈</span>
+                <span class="metric-name">upt-awa-799, Http Server Errors</span>
+                <span class="metric-type">Suma</span>
+                <span class="metric-close">✖</span>
+            </div>
+            <div class="metric-tag">
+                <span class="metric-tag-icon">📈</span>
+                <span class="metric-name">upt-awa-799, Requests</span>
+                <span class="metric-type">Suma</span>
+                <span class="metric-close">✖</span>
+            </div>
+            <div class="metric-tag">
+                <span class="metric-tag-icon">📈</span>
+                <span class="metric-name">upt-awa-799, Memory working set</span>
+                <span class="metric-type">Promedio</span>
+                <span class="metric-close">✖</span>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="y-axis">
+                <div>2083.35días</div>
+                <div>1851.85días</div>
+                <div>1620.37días</div>
+                <div>1388.89días</div>
+                <div>1157.41días</div>
+                <div>925.93días</div>
+                <div>694.44días</div>
+                <div>462.96días</div>
+                <div>231.48días</div>
+                <div>0s</div>
+            </div>
+            <div class="graph-area">
+                <div class="horizontal-lines">
+                    <div class="h-line"></div>
+                    <div class="h-line"></div>
+                    <div class="h-line"></div>
+                    <div class="h-line"></div>
+                    <div class="h-line"></div>
+                    <div class="h-line"></div>
+                    <div class="h-line"></div>
+                    <div class="h-line"></div>
+                    <div class="h-line"></div>
+                    <div class="h-line"></div>
+                </div>
+                <div class="purple-spike"></div>
+                <div class="green-area"></div>
+            </div>
+            <div class="x-axis">
+                <div>6 PM</div>
+                <div>6 AM</div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #4287f5;"></div>
+                <div>Average Response Time (deprecated) (Promedio), upt-awa-799 | 2.67s</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #e600e6;"></div>
+                <div>Average Response Time (deprecated) (Promedio), upt-awa-799 | 2.67s</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #00cccc;"></div>
+                <div>Data In (Suma), upt-awa-799 | 48.5KB</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #8000ff;"></div>
+                <div>CPU Time (Suma), upt-awa-799 | 887.00ms</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #00cc00;"></div>
+                <div>Data Out (Suma), upt-awa-799 | 410.6KB</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #0066cc;"></div>
+                <div>Http Server Errors (Suma), upt-awa-799 | 0</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #cc6600;"></div>
+                <div>Requests (Suma), upt-awa-799 | 25</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #336600;"></div>
+                <div>Memory working set (Promedio), upt-awa-799 | 49.6MB</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #9933cc;"></div>
+                <div>Memory working set (Promedio), upt-awa-799 | 49.6MB</div>
+            </div>
+            <br>
+        </div>
+        <br>
+        <img src="/Metric-upt-awa-799.jpg" alt="Gráfico de Métricas" style="align-items: center;max-width: 100%; height: auto; border-radius: 5px;">
+
+    </div>
+
+</body>
+</html>

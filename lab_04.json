@@ -1,0 +1,847 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serverfarms_upt_asp_799_name": {
+      "type": "String"
+    },
+    "servers_upt_dbs_799_name": {
+      "type": "String"
+    },
+    "sites_upt_awa_799_name": {
+      "type": "String"
+    },
+    "vulnerabilityAssessments_Default_storageContainerPath": {
+      "type": "SecureString"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2024-05-01-preview",
+      "kind": "v12.0",
+      "location": "westus",
+      "name": "[parameters('servers_upt_dbs_799_name')]",
+      "properties": {
+        "administratorLogin": "adminsql",
+        "minimalTlsVersion": "1.2",
+        "publicNetworkAccess": "Enabled",
+        "restrictOutboundNetworkAccess": "Disabled",
+        "version": "12.0"
+      },
+      "type": "Microsoft.Sql/servers"
+    },
+    {
+      "apiVersion": "2024-04-01",
+      "kind": "linux",
+      "location": "West US",
+      "name": "[parameters('serverfarms_upt_asp_799_name')]",
+      "properties": {
+        "elasticScaleEnabled": false,
+        "hyperV": false,
+        "isSpot": false,
+        "isXenon": false,
+        "maximumElasticWorkerCount": 1,
+        "perSiteScaling": false,
+        "reserved": true,
+        "targetWorkerCount": 0,
+        "targetWorkerSizeId": 0,
+        "zoneRedundant": false
+      },
+      "sku": {
+        "capacity": 1,
+        "family": "F",
+        "name": "F1",
+        "size": "F1",
+        "tier": "Free"
+      },
+      "type": "Microsoft.Web/serverfarms"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/Default')]",
+      "properties": {
+        "state": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/advancedThreatProtectionSettings"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/CreateIndex')]",
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/advisors"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/DbParameterization')]",
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/advisors"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/DefragmentIndex')]",
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/advisors"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/DropIndex')]",
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/advisors"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/ForceLastGoodPlan')]",
+      "properties": {
+        "autoExecuteValue": "Enabled"
+      },
+      "type": "Microsoft.Sql/servers/advisors"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "location": "West US",
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/Default')]",
+      "properties": {
+        "auditingState": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/auditingPolicies"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/Default')]",
+      "properties": {
+        "auditActionsAndGroups": [],
+        "isAzureMonitorTargetEnabled": false,
+        "isManagedIdentityInUse": false,
+        "isStorageSecondaryKeyInUse": false,
+        "retentionDays": 0,
+        "state": "Disabled",
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+      },
+      "type": "Microsoft.Sql/servers/auditingSettings"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "location": "westus",
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/default')]",
+      "properties": {
+        "connectionType": "Default"
+      },
+      "type": "Microsoft.Sql/servers/connectionPolicies"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "kind": "v12.0,user",
+      "location": "westus",
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten')]",
+      "properties": {
+        "availabilityZone": "NoPreference",
+        "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+        "collation": "SQL_Latin1_General_CP1_CI_AS",
+        "isLedgerOn": false,
+        "maintenanceConfigurationId": "/subscriptions/3f6287af-bc23-4ca2-9f43-d46c2b871a7b/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default",
+        "maxSizeBytes": 33554432,
+        "readScale": "Disabled",
+        "requestedBackupStorageRedundancy": "Geo",
+        "zoneRedundant": false
+      },
+      "sku": {
+        "capacity": 5,
+        "name": "Free",
+        "tier": "Free"
+      },
+      "type": "Microsoft.Sql/servers/databases"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/master/Default')]",
+      "properties": {
+        "state": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/advancedThreatProtectionSettings"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "location": "West US",
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/master/Default')]",
+      "properties": {
+        "auditingState": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/auditingPolicies"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/master/Default')]",
+      "properties": {
+        "isAzureMonitorTargetEnabled": false,
+        "retentionDays": 0,
+        "state": "Disabled",
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+      },
+      "type": "Microsoft.Sql/servers/databases/auditingSettings"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/master/Default')]",
+      "properties": {
+        "isAzureMonitorTargetEnabled": false,
+        "retentionDays": 0,
+        "state": "Disabled",
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+      },
+      "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/master/Default')]",
+      "properties": {
+        "state": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/geoBackupPolicies"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/master/Current')]",
+      "properties": {},
+      "type": "Microsoft.Sql/servers/databases/ledgerDigestUploads"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/master/Default')]",
+      "properties": {
+        "disabledAlerts": [
+          ""
+        ],
+        "emailAccountAdmins": false,
+        "emailAddresses": [
+          ""
+        ],
+        "retentionDays": 0,
+        "state": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/securityAlertPolicies"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/master/Current')]",
+      "properties": {
+        "state": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/transparentDataEncryption"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/master/Default')]",
+      "properties": {
+        "recurringScans": {
+          "emailSubscriptionAdmins": true,
+          "isEnabled": false
+        }
+      },
+      "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/Default')]",
+      "properties": {
+        "isAzureMonitorTargetEnabled": false,
+        "isManagedIdentityInUse": false,
+        "state": "Disabled",
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+      },
+      "type": "Microsoft.Sql/servers/devOpsAuditingSettings"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "kind": "servicemanaged",
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/current')]",
+      "properties": {
+        "autoRotationEnabled": false,
+        "serverKeyName": "ServiceManaged",
+        "serverKeyType": "ServiceManaged"
+      },
+      "type": "Microsoft.Sql/servers/encryptionProtector"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/Default')]",
+      "properties": {
+        "auditActionsAndGroups": [],
+        "isAzureMonitorTargetEnabled": false,
+        "isManagedIdentityInUse": false,
+        "isStorageSecondaryKeyInUse": false,
+        "retentionDays": 0,
+        "state": "Disabled",
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+      },
+      "type": "Microsoft.Sql/servers/extendedAuditingSettings"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/ClientIPAddress_2025-4-24_20-32-13')]",
+      "properties": {
+        "endIpAddress": "179.6.57.109",
+        "startIpAddress": "179.6.57.109"
+      },
+      "type": "Microsoft.Sql/servers/firewallRules"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/PublicAccess')]",
+      "properties": {
+        "endIpAddress": "255.255.255.255",
+        "startIpAddress": "0.0.0.0"
+      },
+      "type": "Microsoft.Sql/servers/firewallRules"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "kind": "servicemanaged",
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/ServiceManaged')]",
+      "properties": {
+        "serverKeyType": "ServiceManaged"
+      },
+      "type": "Microsoft.Sql/servers/keys"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/Default')]",
+      "properties": {
+        "disabledAlerts": [
+          ""
+        ],
+        "emailAccountAdmins": false,
+        "emailAddresses": [
+          ""
+        ],
+        "retentionDays": 0,
+        "state": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/securityAlertPolicies"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/Default')]",
+      "properties": {
+        "state": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/sqlVulnerabilityAssessments"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/Default')]",
+      "properties": {
+        "recurringScans": {
+          "emailSubscriptionAdmins": true,
+          "isEnabled": false
+        },
+        "storageContainerPath": "[parameters('vulnerabilityAssessments_Default_storageContainerPath')]"
+      },
+      "type": "Microsoft.Sql/servers/vulnerabilityAssessments"
+    },
+    {
+      "apiVersion": "2024-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_upt_asp_799_name'))]"
+      ],
+      "kind": "app,linux,container",
+      "location": "West US",
+      "name": "[parameters('sites_upt_awa_799_name')]",
+      "properties": {
+        "clientAffinityEnabled": false,
+        "clientCertEnabled": false,
+        "clientCertMode": "Required",
+        "containerSize": 0,
+        "customDomainVerificationId": "FD3BFA9FE6BF78F2401BB7FCAB9251AF4924DC77F65E3D9E2CFF5A582A77E333",
+        "dailyMemoryTimeQuota": 0,
+        "dnsConfiguration": {},
+        "enabled": true,
+        "endToEndEncryptionEnabled": false,
+        "hostNameSslStates": [
+          {
+            "hostType": "Standard",
+            "name": "[concat(parameters('sites_upt_awa_799_name'), '.azurewebsites.net')]",
+            "sslState": "Disabled"
+          },
+          {
+            "hostType": "Repository",
+            "name": "[concat(parameters('sites_upt_awa_799_name'), '.scm.azurewebsites.net')]",
+            "sslState": "Disabled"
+          }
+        ],
+        "hostNamesDisabled": false,
+        "httpsOnly": false,
+        "hyperV": false,
+        "ipMode": "IPv4",
+        "isXenon": false,
+        "keyVaultReferenceIdentity": "SystemAssigned",
+        "publicNetworkAccess": "Enabled",
+        "redundancyMode": "None",
+        "reserved": true,
+        "scmSiteAlsoStopped": false,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_upt_asp_799_name'))]",
+        "siteConfig": {
+          "acrUseManagedIdentityCreds": false,
+          "alwaysOn": false,
+          "functionAppScaleLimit": 0,
+          "http20Enabled": false,
+          "linuxFxVersion": "DOCKER|ghcr.io/sergio-colque-ponce/shorten:5b7ac3a49301d3a2928715ea9861a311876dadcf",
+          "minimumElasticInstanceCount": 0,
+          "numberOfWorkers": 1
+        },
+        "storageAccountRequired": false,
+        "vnetBackupRestoreEnabled": false,
+        "vnetContentShareEnabled": false,
+        "vnetImagePullEnabled": false,
+        "vnetRouteAllEnabled": false
+      },
+      "type": "Microsoft.Web/sites"
+    },
+    {
+      "apiVersion": "2024-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_upt_awa_799_name'))]"
+      ],
+      "location": "West US",
+      "name": "[concat(parameters('sites_upt_awa_799_name'), '/ftp')]",
+      "properties": {
+        "allow": true
+      },
+      "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies"
+    },
+    {
+      "apiVersion": "2024-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_upt_awa_799_name'))]"
+      ],
+      "location": "West US",
+      "name": "[concat(parameters('sites_upt_awa_799_name'), '/scm')]",
+      "properties": {
+        "allow": true
+      },
+      "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies"
+    },
+    {
+      "apiVersion": "2024-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_upt_awa_799_name'))]"
+      ],
+      "location": "West US",
+      "name": "[concat(parameters('sites_upt_awa_799_name'), '/web')]",
+      "properties": {
+        "acrUseManagedIdentityCreds": false,
+        "alwaysOn": false,
+        "autoHealEnabled": false,
+        "azureStorageAccounts": {},
+        "defaultDocuments": [
+          "Default.htm",
+          "Default.html",
+          "Default.asp",
+          "index.htm",
+          "index.html",
+          "iisstart.htm",
+          "default.aspx",
+          "index.php",
+          "hostingstart.html"
+        ],
+        "detailedErrorLoggingEnabled": false,
+        "elasticWebAppScaleLimit": 0,
+        "experiments": {
+          "rampUpRules": []
+        },
+        "ftpsState": "Disabled",
+        "functionsRuntimeScaleMonitoringEnabled": false,
+        "http20Enabled": false,
+        "httpLoggingEnabled": false,
+        "ipSecurityRestrictions": [
+          {
+            "action": "Allow",
+            "description": "Allow all access",
+            "ipAddress": "Any",
+            "name": "Allow all",
+            "priority": 2147483647
+          }
+        ],
+        "ipSecurityRestrictionsDefaultAction": "Allow",
+        "linuxFxVersion": "DOCKER|ghcr.io/sergio-colque-ponce/shorten:5b7ac3a49301d3a2928715ea9861a311876dadcf",
+        "loadBalancing": "LeastRequests",
+        "localMySqlEnabled": false,
+        "logsDirectorySizeLimit": 35,
+        "managedPipelineMode": "Integrated",
+        "minTlsVersion": "1.2",
+        "minimumElasticInstanceCount": 0,
+        "netFrameworkVersion": "v4.0",
+        "numberOfWorkers": 1,
+        "preWarmedInstanceCount": 0,
+        "publicNetworkAccess": "Enabled",
+        "publishingUsername": "$upt-awa-799",
+        "remoteDebuggingEnabled": false,
+        "remoteDebuggingVersion": "VS2022",
+        "requestTracingEnabled": false,
+        "scmIpSecurityRestrictions": [
+          {
+            "action": "Allow",
+            "description": "Allow all access",
+            "ipAddress": "Any",
+            "name": "Allow all",
+            "priority": 2147483647
+          }
+        ],
+        "scmIpSecurityRestrictionsDefaultAction": "Allow",
+        "scmIpSecurityRestrictionsUseMain": false,
+        "scmMinTlsVersion": "1.2",
+        "scmType": "None",
+        "use32BitWorkerProcess": true,
+        "virtualApplications": [
+          {
+            "physicalPath": "site\\wwwroot",
+            "preloadEnabled": false,
+            "virtualPath": "/"
+          }
+        ],
+        "vnetPrivatePortsCount": 0,
+        "vnetRouteAllEnabled": false,
+        "webSocketsEnabled": false
+      },
+      "type": "Microsoft.Web/sites/config"
+    },
+    {
+      "apiVersion": "2024-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_upt_awa_799_name'))]"
+      ],
+      "location": "West US",
+      "name": "[concat(parameters('sites_upt_awa_799_name'), '/233715b9f1f5bf25bfbe859f7844896c28d17d101745553881961')]",
+      "properties": {
+        "active": false,
+        "author": "Sergio-Colque-Ponce",
+        "deployer": "GitHub",
+        "end_time": "2025-04-25T04:04:42.0406041Z",
+        "message": "{\"type\":\"Deployment\",\"sha\":\"233715b9f1f5bf25bfbe859f7844896c28d17d10\",\"repoName\":\"UPT-FAING-EPIS/lab-2025-i-cps-u1-04-csharp-Sergio-Colque-Ponce\",\"actor\":\"Sergio-Colque-Ponce\",\"slotName\":\"production\"}",
+        "start_time": "2025-04-25T04:04:42.0406041Z",
+        "status": 4
+      },
+      "type": "Microsoft.Web/sites/deployments"
+    },
+    {
+      "apiVersion": "2024-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_upt_awa_799_name'))]"
+      ],
+      "location": "West US",
+      "name": "[concat(parameters('sites_upt_awa_799_name'), '/5b7ac3a49301d3a2928715ea9861a311876dadcf1745554923545')]",
+      "properties": {
+        "active": true,
+        "author": "Sergio-Colque-Ponce",
+        "deployer": "GitHub",
+        "end_time": "2025-04-25T04:22:03.5853678Z",
+        "message": "{\"type\":\"Deployment\",\"sha\":\"5b7ac3a49301d3a2928715ea9861a311876dadcf\",\"repoName\":\"UPT-FAING-EPIS/lab-2025-i-cps-u1-04-csharp-Sergio-Colque-Ponce\",\"actor\":\"Sergio-Colque-Ponce\",\"slotName\":\"production\"}",
+        "start_time": "2025-04-25T04:22:03.5853678Z",
+        "status": 4
+      },
+      "type": "Microsoft.Web/sites/deployments"
+    },
+    {
+      "apiVersion": "2024-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_upt_awa_799_name'))]"
+      ],
+      "location": "West US",
+      "name": "[concat(parameters('sites_upt_awa_799_name'), '/', parameters('sites_upt_awa_799_name'), '.azurewebsites.net')]",
+      "properties": {
+        "hostNameType": "Verified",
+        "siteName": "upt-awa-799"
+      },
+      "type": "Microsoft.Web/sites/hostNameBindings"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/Default')]",
+      "properties": {
+        "state": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/advancedThreatProtectionSettings"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/CreateIndex')]",
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/advisors"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/DbParameterization')]",
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/advisors"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/DefragmentIndex')]",
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/advisors"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/DropIndex')]",
+      "properties": {
+        "autoExecuteValue": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/advisors"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/ForceLastGoodPlan')]",
+      "properties": {
+        "autoExecuteValue": "Enabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/advisors"
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "location": "West US",
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/Default')]",
+      "properties": {
+        "auditingState": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/auditingPolicies"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/Default')]",
+      "properties": {
+        "isAzureMonitorTargetEnabled": false,
+        "retentionDays": 0,
+        "state": "Disabled",
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+      },
+      "type": "Microsoft.Sql/servers/databases/auditingSettings"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/default')]",
+      "properties": {
+        "diffBackupIntervalInHours": 12,
+        "retentionDays": 7
+      },
+      "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/Default')]",
+      "properties": {
+        "isAzureMonitorTargetEnabled": false,
+        "retentionDays": 0,
+        "state": "Disabled",
+        "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+      },
+      "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/Default')]",
+      "properties": {
+        "state": "Enabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/geoBackupPolicies"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/Current')]",
+      "properties": {},
+      "type": "Microsoft.Sql/servers/databases/ledgerDigestUploads"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/Default')]",
+      "properties": {
+        "disabledAlerts": [
+          ""
+        ],
+        "emailAccountAdmins": false,
+        "emailAddresses": [
+          ""
+        ],
+        "retentionDays": 0,
+        "state": "Disabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/securityAlertPolicies"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/Current')]",
+      "properties": {
+        "state": "Enabled"
+      },
+      "type": "Microsoft.Sql/servers/databases/transparentDataEncryption"
+    },
+    {
+      "apiVersion": "2024-05-01-preview",
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_upt_dbs_799_name'), 'shorten')]",
+        "[resourceId('Microsoft.Sql/servers', parameters('servers_upt_dbs_799_name'))]"
+      ],
+      "name": "[concat(parameters('servers_upt_dbs_799_name'), '/shorten/Default')]",
+      "properties": {
+        "recurringScans": {
+          "emailSubscriptionAdmins": true,
+          "isEnabled": false
+        }
+      },
+      "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments"
+    }
+  ],
+  "variables": {}
+}
