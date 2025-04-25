@@ -156,3 +156,11 @@ jobs:
         run: |
             cd infra
             terraform apply -var="suscription_id=${{ secrets.SUSCRIPTION_ID }}" -var="sqladmin_username=${{ secrets.SQL_USER }}" -var="sqladmin_password=${{ secrets.SQL_PASS }}" -auto-approve main.tfplan
+      - name: Resolve TFSec Vulnerabilities
+              run: |
+              cd infra
+              terraform show -json main.tfplan > plan.json
+              tfsec --soft-fail --format json --out tfsec-results.json
+              terramaid resolve --plan plan.json --tfsec tfsec-results.json --output resolved
+              mv resolved/* .
+              terraform fmt      
