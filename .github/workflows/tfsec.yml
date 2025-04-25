@@ -1,0 +1,56 @@
+name: activdad 2 - Análisis de Vulnerabilidades con TFSec
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'infra/**'
+  workflow_dispatch:
+
+jobs:
+  tfsec-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Setup tfsec
+        run: |
+          curl -L -o /tmp/tfsec_1.28.13_linux_amd64.tar.gz "https://github.com/aquasecurity/tfsec/releases/download/v1.28.13/tfsec_1.28.13_linux_amd64.tar.gz"
+          tar -xzvf /tmp/tfsec_1.28.13_linux_amd64.tar.gz -C /tmp
+          mv -v /tmp/tfsec /usr/local/bin/tfsec
+          chmod +x /usr/local/bin/tfsec
+
+      - name: Run TFSec
+        run: |
+          cd infra
+          tfsec --soft-fail --format json --out tfsec-results.json
+          
+      - name: Analyze TFSec Results
+        run: |
+          if [[ -f infra/tfsec-results.json ]]; then
+            echo "## TFSec Vulnerabilities Detected" >> $GITHUB_STEP_SUMMARY
+            cat infra/tfsec-results.json >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No vulnerabilities detected by TFSec." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Resolve TFSec Vulnerabilities (if applicable)
+        run: |
+          if [[ -f infra/tfsec-results.json ]]; then
+            terraform show -json main.tfplan > plan.json
+            terramaid resolve --plan plan.json --tfsec infra/tfsec-results.json --output resolved
+            mv resolved/* .
+            terraform fmt
+          else
+            echo "No vulnerabilities to resolve." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Commit Resolved Files
+        run: |
+          git add .
+          git commit -m "Resolve TFSec vulnerabilities"
+          git push
