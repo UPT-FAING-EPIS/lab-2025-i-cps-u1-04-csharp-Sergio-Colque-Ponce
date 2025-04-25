@@ -28,7 +28,15 @@ jobs:
       - name: Ejecutar
         run: dotnet test "src/Shorten.csproj" --collect:"XPlat Code Coverage;Format=opencover"
       - name: Iniciar SonarQube
-        run: dotnet-sonarscanner begin /k:"${{ env.SONAR_PROJECT }}" /o:"${{ env.SONAR_ORG }}" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="Bank/**/coverage.opencover.xml" /d:sonar.qualitygate.wait=true
+        run: |
+          dotnet-sonarscanner begin \
+            /k:"${{ env.SONAR_PROJECT }}" \
+            /o:"${{ env.SONAR_ORG }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
+            /d:sonar.qualitygate.wait=true \
+            /d:sonar.exclusions="**/Program.cs,**/appsettings.json,**/lab_04.json,**/*.cshtml.cs"
       - name: Compilar
         run: dotnet build "src/Shorten.csproj"
       - name: Finalizar análisis SonarQube
