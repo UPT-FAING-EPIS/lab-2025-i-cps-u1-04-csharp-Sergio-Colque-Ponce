@@ -1,12 +1,12 @@
-name: activdad 2 - Análisis de Vulnerabilidades con TFSec
+name: Activdad 2 - Analisis de Vulnerabilidades con TFSec
 
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'infra/**'
-  workflow_dispatch:
-
+  push
+    #branches: [ "main" ]
+    
+    #paths:
+    #  - 'infra/**'
+  #workflow_dispatch:
 jobs:
   tfsec-analysis:
     runs-on: ubuntu-latest
@@ -23,12 +23,10 @@ jobs:
           tar -xzvf /tmp/tfsec_1.28.13_linux_amd64.tar.gz -C /tmp
           mv -v /tmp/tfsec /usr/local/bin/tfsec
           chmod +x /usr/local/bin/tfsec
-
       - name: Run TFSec
         run: |
           cd infra
           tfsec --soft-fail --format json --out tfsec-results.json
-          
       - name: Analyze TFSec Results
         run: |
           if [[ -f infra/tfsec-results.json ]]; then
@@ -37,20 +35,32 @@ jobs:
           else
             echo "No vulnerabilities detected by TFSec." >> $GITHUB_STEP_SUMMARY
           fi
-
-      - name: Resolve TFSec Vulnerabilities (if applicable)
+      - name: Login to Azure
         run: |
-          if [[ -f infra/tfsec-results.json ]]; then
-            terraform show -json main.tfplan > plan.json
-            terramaid resolve --plan plan.json --tfsec infra/tfsec-results.json --output resolved
-            mv resolved/* .
-            terraform fmt
-          else
-            echo "No vulnerabilities to resolve." >> $GITHUB_STEP_SUMMARY
-          fi
+          az login -u ${{ secrets.AZURE_USERNAME }} -p ${{ secrets.AZURE_PASSWORD }}
+      # - name: Resolve TFSec Vulnerabilities (if applicable)
+      #   run: |
+      #     cd infra
+      #     terraform init
+      #     terraform plan \
+      #       -out=tfplan \
+      #       -var="sqladmin_username=${{ secrets.SQL_USER }}" \
+      #       -var="sqladmin_password=${{ secrets.SQL_PASS }}" \
+      #       -var="suscription_id=${{ secrets.SUSCRIPTION_ID }}" 
 
+      #     terraform show -json tfplan > plan.json
+      #     terraform resolve --plan plan.json --tfsec tfsec-results.json --output resolved
+
+      #     mv resolved/* .
+      #     terraform fmt
+      - name: Resolve TFSec Vulnerabilities (manual)
+        run: |
+          echo "Por favor, revise manualmente el archivo infra/tfsec-results.json y corrija las vulnerabilidades en los archivos Terraform (.tf)."
+  
       - name: Commit Resolved Files
         run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add .
           git commit -m "Resolve TFSec vulnerabilities"
           git push
